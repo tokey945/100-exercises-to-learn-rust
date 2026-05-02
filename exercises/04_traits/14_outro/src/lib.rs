@@ -1,4 +1,79 @@
 // TODO: Define a new `SaturatingU16` type.
+use std::ops::Add;
+#[derive(Copy, Clone, Debug)]
+pub struct SaturatingU16 {
+    value: u16,
+}
+impl SaturatingU16 {
+    fn new(value: u16) -> Self {
+        Self { value }
+    }
+}
+impl From<u16> for SaturatingU16 {
+    fn from(value: u16) -> Self {
+        Self::new(value)
+    }
+}
+impl From<u8> for SaturatingU16 {
+    fn from(value: u8) -> Self {
+        Self::new(value as u16)
+    }
+}
+impl From<&u16> for SaturatingU16 {
+    fn from(value: &u16) -> Self {
+        Self::new(*value)
+    }
+}
+impl From<&u8> for SaturatingU16 {
+    fn from(value: &u8) -> Self {
+        Self::new(*value as u16)
+    }
+}
+
+impl Add<SaturatingU16> for SaturatingU16 {
+    type Output = SaturatingU16;
+
+    fn add(self, rhs: SaturatingU16) -> SaturatingU16 {
+        let sum = self.value as u32 + rhs.value as u32;
+        if sum > u16::MAX as u32 {
+            SaturatingU16::new(u16::MAX)
+        } else {
+            SaturatingU16::new(sum as u16)
+        }
+    }
+}
+impl Add<&SaturatingU16> for SaturatingU16 {
+    type Output = SaturatingU16;
+
+    fn add(self, rhs: &SaturatingU16) -> SaturatingU16 {
+        self + (*rhs)
+    }
+}
+impl Add<u16> for SaturatingU16 {
+    type Output = SaturatingU16;
+
+    fn add(self, rhs: u16) -> SaturatingU16 {
+        self + SaturatingU16::new(rhs)
+    }
+}
+impl Add<&u16> for SaturatingU16 {
+    type Output = SaturatingU16;
+
+    fn add(self, rhs: &u16) -> SaturatingU16 {
+        self + SaturatingU16::new(*rhs)
+    }
+}
+
+impl PartialEq<u16> for SaturatingU16 {
+    fn eq(&self, other: &u16) -> bool {
+        self.value == *other
+    }
+}
+impl PartialEq<SaturatingU16> for SaturatingU16 {
+    fn eq(&self, other: &SaturatingU16) -> bool {
+        self.value == other.value
+    }
+}
 //   It should hold a `u16` value.
 //   It should provide conversions from `u16`, `u8`, `&u16` and `&u8`.
 //   It should support addition with a right-hand side of type

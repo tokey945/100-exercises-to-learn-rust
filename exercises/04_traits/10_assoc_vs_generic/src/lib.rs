@@ -13,6 +13,33 @@
 // You don't have to though: it's perfectly okay to write three separate
 // implementations manually. Venture further only if you're curious.
 
+// Two ways to design this trait: an associated-type/generic approach or a
+// generic-trait approach. Here we use a generic trait `Power<N>` so we can
+// implement it separately for different exponent parameter types (e.g. u16,
+// u32, and &u32) and satisfy the tests.
+
+pub trait Power<N> {
+    fn power(&self, n: N) -> Self;
+}
+
+impl Power<u16> for u32 {
+    fn power(&self, n: u16) -> Self {
+        self.pow(n.into())
+    }
+}
+
+impl Power<u32> for u32 {
+    fn power(&self, n: u32) -> Self {
+        self.pow(n)
+    }
+}
+
+impl<'a> Power<&'a u32> for u32 {
+    fn power(&self, n: &'a u32) -> Self {
+        self.pow(*n)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Power;

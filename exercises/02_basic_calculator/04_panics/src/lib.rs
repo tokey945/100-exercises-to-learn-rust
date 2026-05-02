@@ -2,6 +2,9 @@
 /// calculate the average speed of the journey.
 fn speed(start: u32, end: u32, time_elapsed: u32) -> u32 {
     // TODO: Panic with a custom message if `time_elapsed` is 0
+    if time_elapsed == 0 {
+        panic!("时间不能为零")
+    }
 
     (end - start) / time_elapsed
 }
